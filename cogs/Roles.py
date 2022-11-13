@@ -210,6 +210,7 @@ class RolesCog(commands.Cog):
 
 #Role add or remove on reaction
     #Role add
+    @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         guild = self.bot.get_guild(payload.guild_id)
         conn = sqlite3.connect('data.db')
@@ -224,9 +225,9 @@ class RolesCog(commands.Cog):
             message = None
             for channel in guild.channels:
                 if channel.name in str(channelName):
-                    message = await channel.get_message(payload.message_id)
+                    message = await channel.fetch_message(payload.message_id)
                     break
-            member = guild.get_member(payload.user_id)
+            member = await guild.fetch_member(payload.user_id)
             myEmoji = payload.emoji
 
             conn = sqlite3.connect('data.db')
@@ -239,21 +240,22 @@ class RolesCog(commands.Cog):
                     check = True
                     break
             if check == False:
-              await message.remove_reaction(payload.emoji, member)
-              return
+                await message.remove_reaction(payload.emoji, member)
+                return
 
             c.execute("SELECT role FROM roles WHERE server_id = (?) AND emoji = (?);", (payload.guild_id, str(myEmoji)))
             dataRole = c.fetchall()
             conn.close()
 
-            if "Arcation#9905" == str(member):
+            if str(message.author) == str(member):
                 return
             for role in guild.roles:
                 if str(role) in str(dataRole):
-                   await member.add_roles(role)
-                   break
+                    await member.add_roles(role)
+                    break
 
     #Role remove
+    @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
         guild = self.bot.get_guild(payload.guild_id)
         conn = sqlite3.connect('data.db')
@@ -268,9 +270,9 @@ class RolesCog(commands.Cog):
             message = None
             for channel in guild.channels:
                 if channel.name in channelName: 
-                    message = await channel.get_message(payload.message_id)
+                    message = await channel.fetch_message(payload.message_id)
                     break
-            member = guild.get_member(payload.user_id)
+            member = await guild.fetch_member(payload.user_id)
             myEmoji = payload.emoji
 
             conn = sqlite3.connect('data.db')
@@ -280,8 +282,9 @@ class RolesCog(commands.Cog):
             conn.close()
             for role in guild.roles:
                 if str(role) in str(dataRole):
-                   await member.remove_roles(role)
-                   break
+                    print(role)
+                    await member.remove_roles(role)
+                    break
 
 async def setup(bot):
     await bot.add_cog(RolesCog(bot))

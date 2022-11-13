@@ -1,0 +1,20 @@
+`.color (hex)`
+Used to add a custom color to your name.
+`.poll [time] (poll topic)`
+Call for a poll.
+`.roll (maxnumber)`
+Roll a random number from 0 to yours.
+#AdminOnlyBelow
+
+`.adduser (name)`
+Used to add a user to the set default rank in case the server is in private mode.
+`.addrole (Role Emoji) (Role Name)`
+Add a new and pingable role for a game or activity!
+`.removerole (Role Emoji)`
+Remove an existing role from the roles list.
+`.rainbow`
+Several color roles to add diversity to your server! Can be overriden with a personalized one (.color)
+`.user (role name)`
+Defines the default User group for the bot (Server Owner only)
+`.admin (role name)`
+Defines the default Admin group for the bot (Server Owner only)

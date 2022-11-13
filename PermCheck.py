@@ -5,8 +5,11 @@ import sqlite3
 def CheckIfAdmin(self, context):
     conn = sqlite3.connect('data.db')
     c = conn.cursor()
-    server = int(context.message.guild.id)
     allow = False
+    try: #guild.id won't be applicable for direct messages
+        server = int(context.message.guild.id)
+    except:
+        return(allow)
 
     if context.message.author.id == context.guild.owner_id:
         allow = True

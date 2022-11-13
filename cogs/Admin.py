@@ -3,6 +3,7 @@ from discord.ext import commands
 import sqlite3
 import random
 import asyncio
+import linecache
 from PermCheck import CheckIfAdmin
 
 class AdminCog(commands.Cog):
@@ -12,29 +13,22 @@ class AdminCog(commands.Cog):
 #Custom help command that overrides discord's default. Will be superseeded once prefix commands are changed to slash commands.
     @commands.command(pass_context = True)
     async def help(self, context):
+        adminAsking = CheckIfAdmin(self,context)
+        index = 1
         myEmbed = discord.Embed(
                    title = 'Help is here!',
                    color = discord.Color.dark_red()
                    )
-        myEmbed.add_field(name = '`.color (hex)`', value = 'Used to add a custom color to your name.', inline = False)
-        myEmbed.add_field(name = '`.poll [time] (poll topic)`', value = 'Call for a poll.', inline = False)
-        myEmbed.add_field(name = '`.roll (maxnumber)`', value = 'Roll a random number from 0 to yours.', inline = False)
-        await context.author.send(content=None, embed=myEmbed)
-
-        if CheckIfAdmin(self, context) == False:
-          return
-
-        myEmbed = discord.Embed(
-                   title = 'Admin help is here!',
-                   color = discord.Color.dark_red()
-                   )
-        myEmbed.add_field(name = '`.adduser (name)`', value = 'Used to add a user to the set default rank in case the server is in private mode.', inline = False)
-        myEmbed.add_field(name = '`.addrole (Role Emoji) (Role Name)`', value = 'Add a new and pingable role for a game or activity!', inline = False)
-        myEmbed.add_field(name = '`.removerole (Role Emoji)`', value = 'Remove an existing role from the roles list.', inline = False)
-        myEmbed.add_field(name = '`.rainbow`', value = 'Several color roles to add diversity to your server! Can be overriden with a personalized one (.color)', inline = False)
-        myEmbed.add_field(name = '`.user (role name)`', value = 'Defines the default User group for the bot (Owner only)', inline = False)
-        myEmbed.add_field(name = '`.admin (role name)`', value = 'Defines the default Admin group for the bot (Owner only)', inline = False)
-
+        while True:
+            commandName = linecache.getline(r'commands.txt', index).rstrip('\n')
+            commandValue = linecache.getline(r'commands.txt', index + 1).rstrip('\n')
+            if commandName == '' or (adminAsking == False and commandName == '#AdminOnlyBelow'):
+                break
+            if commandName == '#AdminOnlyBelow':
+                index += 2
+                continue
+            myEmbed.add_field(name = commandName, value = commandValue, inline = False)
+            index += 2 
         await context.author.send(content=None, embed=myEmbed)
 
 #Bot messages server owner on join
@@ -58,7 +52,7 @@ class AdminCog(commands.Cog):
         if c.fetchone() == None:
             c.execute("INSERT INTO server_info VALUES (?,?,?,?,?);", (server, 0, 0, 0, None)) 
         c.execute("SELECT user_role FROM server_info WHERE server_id = (?);", (server,))
-        userRole = c.fetchall()
+        userRole = c.fetchone()
         conn.commit()
         conn.close()
 
@@ -79,7 +73,7 @@ class AdminCog(commands.Cog):
             await userToAdd.add_roles(addRole)
             await context.send("User added!")
         except:
-            await context.send("Cannot add user. Did you spell the name properly?")
+            await context.send("Cannot add user.")
 
 #Setting the server's default admin role for the bot to recognize
     @commands.command(pass_context = True, hidden = True)

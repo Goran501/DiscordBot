@@ -19,10 +19,11 @@ initial_extensions = ['cogs.User',
 #Bot token for authentication on startup
 TOKEN = linecache.getline(r'TOKEN.txt',2)
 
-#Declared intents so the bot can modify users on its servers / read messages
+#Declared intents so the bot can modify users on its servers, read messages, and reactions
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
+intents.reactions = True
 
 bot = commands.Bot(command_prefix=get_prefix, intents=intents)
 bot.remove_command('help') #overriden with a custom help command

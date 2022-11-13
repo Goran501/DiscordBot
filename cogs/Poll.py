@@ -9,7 +9,6 @@ class PollCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-#TO DO: Minutes are currently the only supported unit, will add seconds/hours
 #Poll command
     @commands.command(pass_context = True)
     async def poll(self, context):
@@ -64,24 +63,24 @@ class PollCog(commands.Cog):
                 counter+=1
 
             mentionMessage = await context.send(pollVoters.mention)
-            await context.send('Poll `' + str(context.message.content[(6 + lengthOfNumber):]) + '` is over!')
+            await context.send('Poll `' + str(context.message.content[(7 + lengthOfNumber):]) + '` is over!')
             if votes[0] == votes[1]:
                 if votes[0] == 0:
                     await context.send('Looks like everyone fell asleep. Let us call it a tie!')
                 elif votes[0] > 1:
                     await context.send('And would you look at that, the results are tied at ' + str(votes[0]) + ' votes each!')
                 else:
-                    await context.send('And would you look at that, the results are tied at 1 vote each. Boy, you both were really close to winning there!')
+                    await context.send('And would you look at that, the results are tied at 1 vote each. You both were really close to winning there!')
             elif votes[0] > votes[1]:
                 if votes[0] > 1:
                     await context.send('It has passed with ' + str(votes[0]) + ' votes!')
                 else:
-                    await context.send('It has passed with 1 vote! I always do love voting with myself, I see you do too!')
+                    await context.send('It has passed with 1 vote! Out of 1 vote!')
             elif votes[0] < votes[1]:
                 if votes[1] > 1:
                     await context.send('It has failed with ' + str(votes[1]) + ' people not liking the idea very much!')
                 else:
-                    await context.send('It has failed with 1 vote! Imagine starting a poll just so it can fail with one vote.')
+                    await context.send('It has failed with 1 vote!')
             await mentionMessage.delete()
             await pollVoters.delete()
 
