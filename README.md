@@ -1,2 +1,7 @@
 # DiscordBot
-# Basic Bot for the Discord App
+
+# Basic Bot used with the Discord App
+# https://discord.com/developers
+
+# Using Discord.py
+# https://discordpy.readthedocs.io/en/stable/api.html
